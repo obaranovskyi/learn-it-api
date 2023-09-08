@@ -1,0 +1,239 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ShareWorkspaceEntity {
+  id: ID!
+  created: DateTime!
+  updated: DateTime!
+  workspace: WorkspaceEntity!
+  user: UserEntity!
+  roles: [ShareWorkspaceRolesEnum!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum ShareWorkspaceRolesEnum {
+  CAN_VIEW
+  CAN_UPDATE
+  CAN_REMOVE
+  CAN_ADD_CONTENT
+  CAN_UPDATE_CONTENT
+  CAN_REMOVE_CONTENT
+}
+
+type WordExampleEntity {
+  id: ID!
+  header: String!
+  value: String!
+  translation: String!
+  description: String!
+  word: WordEntity!
+  created: DateTime!
+  updated: DateTime!
+}
+
+type WordEntity {
+  id: ID!
+  originalValue: String!
+  translation: String!
+  description: String!
+  wordGroup: WordGroupEntity!
+  examples: [WordExampleEntity!]!
+  created: DateTime!
+  updated: DateTime!
+}
+
+type WordGroupEntity {
+  id: ID!
+  name: String!
+  words: [WordEntity!]!
+  created: DateTime!
+  updated: DateTime!
+  workspace: WorkspaceEntity!
+}
+
+type WorkspaceEntity {
+  id: ID!
+  name: String!
+  created: DateTime!
+  updated: DateTime!
+  owner: UserEntity!
+  sharedWorkspaces: [ShareWorkspaceEntity!]!
+  wordGroups: [WordGroupEntity!]!
+}
+
+type UserEntity {
+  id: ID!
+  username: String!
+  password: String!
+  workspaces: [WorkspaceEntity!]!
+  sharedWorkspaces: [ShareWorkspaceEntity!]!
+  created: DateTime!
+  updated: DateTime!
+}
+
+type UserResponseModel {
+  id: Int!
+  username: String!
+  created: DateTime!
+  updated: DateTime
+  token: String
+}
+
+type UsernameUniquenessResponseModel {
+  exists: Boolean!
+}
+
+type WorkspaceResponseModel {
+  id: Int!
+  created: DateTime!
+  updated: DateTime!
+  name: String!
+  ownerId: Int
+  ownerName: String
+}
+
+type ShareWorkspaceResponseModel {
+  id: Int!
+  created: DateTime!
+  updated: DateTime!
+  roles: [ShareWorkspaceRolesEnum!]!
+  userId: Int!
+  username: String!
+  ownerId: Int!
+  ownerName: String!
+  workspace: WorkspaceResponseModel!
+}
+
+type WordExampleResponseModel {
+  id: Int!
+  created: DateTime!
+  updated: DateTime!
+  value: String!
+  header: String!
+  translation: String!
+  description: String!
+  wordId: Int!
+}
+
+type WordResponseModel {
+  id: Int!
+  created: DateTime!
+  updated: DateTime!
+  value: String!
+  translation: String!
+  description: String
+  wordGroupId: Int!
+  examples: [WordExampleResponseModel!]
+}
+
+type WordGroupResponseModel {
+  id: Int!
+  created: DateTime!
+  updated: DateTime!
+  workspaceId: Int!
+  workspaceOwnerName: String!
+  name: String!
+  workspaceOwnerId: Int!
+}
+
+type Query {
+  usernameUniqueness(usernameUniquenessInput: UsernameUniquenessInput!): UsernameUniquenessResponseModel!
+  findAllUsers: [UserResponseModel!]!
+  findAllWorkspaces: [WorkspaceResponseModel!]!
+  findWorkspace(workspaceId: Int!): WorkspaceResponseModel!
+  findAllShareWorkspaces: [ShareWorkspaceResponseModel!]!
+  findShareWorkspace(shareWorkspaceId: Int!): ShareWorkspaceResponseModel!
+  findWordGroup(wordGroupId: Int!): WordGroupResponseModel!
+  findAllWordGroups(findAllWordGroupsInput: FindAllWordGroupsInput!): [WordGroupResponseModel!]!
+  findWord(wordId: Int!): WordResponseModel!
+  findWords(wordGroupId: Int!): [WordResponseModel!]!
+}
+
+input UsernameUniquenessInput {
+  username: String!
+}
+
+input FindAllWordGroupsInput {
+  workspaceId: Int!
+}
+
+type Mutation {
+  login(userInput: UserInput!): UserResponseModel!
+  register(userInput: UserInput!): UserResponseModel!
+  removeUser: Int!
+  createWorkspace(workspaceInput: WorkspaceInput!): WorkspaceResponseModel!
+  updateWorkspace(id: Int!, workspaceInput: WorkspaceInput!): WorkspaceResponseModel!
+  removeWorkspace(workspaceId: Int!): Int!
+  createShareWorkspace(shareWorkspaceInput: ShareWorkspaceInput!): ShareWorkspaceResponseModel!
+  updateShareWorkspaceRoles(shareWorkspaceId: Int!, roles: [ShareWorkspaceRolesEnum!]!): ShareWorkspaceResponseModel!
+  removeShareWorkspace(shareWorkspaceId: Int!): Int!
+  createWordGroup(wordGroupInput: WordGroupInput!): WordGroupResponseModel!
+  updateWordGroup(wordGroupInput: ExistingWordGroupInput!): WordGroupResponseModel!
+  removeWordGroup(removeWordGroupInput: RemoveWordGroupInput!): Int!
+  createWord(wordInput: WordInput!): WordResponseModel!
+  updateWord(wordInput: ExistingWordInput!): WordResponseModel!
+  removeWord(wordId: Int!): Int!
+  createWordTest(wordTestInput: WordTestInput!): Boolean
+}
+
+input UserInput {
+  username: String!
+  password: String!
+}
+
+input WorkspaceInput {
+  name: String!
+}
+
+input ShareWorkspaceInput {
+  roles: [ShareWorkspaceRolesEnum!]!
+  userId: Int!
+  workspaceId: Int!
+}
+
+input WordGroupInput {
+  workspaceId: Int!
+  groupName: String!
+}
+
+input ExistingWordGroupInput {
+  wordGroupId: Int!
+  workspaceId: Int!
+  groupName: String!
+}
+
+input RemoveWordGroupInput {
+  wordGroupId: Int!
+  workspaceId: Int!
+}
+
+input WordInput {
+  value: String!
+  translation: String!
+  description: String
+  examples: [String!]
+  wordGroupId: Int!
+}
+
+input ExistingWordInput {
+  wordId: Int!
+  value: String!
+  translation: String!
+  description: String
+  examples: [String!]
+  wordGroupId: Int!
+}
+
+input WordTestInput {
+  wordStats: [WordStatsInput!]!
+}
+
+input WordStatsInput {
+  durationInSeconds: Int!
+  wordId: Int!
+}
